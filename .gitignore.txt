@@ -1,0 +1,53 @@
+# Build results
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Mono Auto Generated Files
+mono_crash.*
+
+# VS Code
+.vscode/
+
+# Visual Studio
+.vs/
+
+# Backup & log files
+*.log
+*.bak
+*.tmp
+
+# NuGet packages
+*.nupkg
+packages/
+
+# Rider
+.idea/
+
+# Publish
+publish/
+
+# IIS Express
+.vsconfig
+*.dbmdl
+*.mdf
+*.ldf
+
+# Entity Framework
+Migrations/
+
+# DotCover
+.idea/
+*.dotCover
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# JetBrains Rider
+.idea/
+*.sln.iml
