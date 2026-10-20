@@ -1,0 +1,22 @@
+name: Build exe
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: microsoft/setup-msbuild@v2
+
+      - name: Build
+        run: msbuild StomatoloskaOrdinacijaKartoteka\StomatoloskaOrdinacijaKartoteka.csproj /p:Configuration=Release /p:Platform=AnyCPU /restore:false
+
+      # Samo exe, bez DataBase.accdb da se ne pregazi baza kod klijenta
+      - uses: actions/upload-artifact@v4
+        with:
+          name: StomatoloskaOrdinacijaKartoteka-exe
+          path: StomatoloskaOrdinacijaKartoteka\bin\Release\StomatoloskaOrdinacijaKartoteka.exe
