@@ -171,6 +171,43 @@ namespace DataBaseProgram
             }
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            DialogResult potvrda = MessageBox.Show("Da li ste sigurni da želite da obrišete ovu posetu?", "Potvrda brisanja", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (potvrda != DialogResult.Yes)
+                return;
+
+            using (OleDbConnection konekcija = new OleDbConnection(konekcioniString))
+            {
+                try
+                {
+                    konekcija.Open();
+                    string deleteQuery = "DELETE FROM Poseta WHERE IDPosete = @idPosete";
+                    using (OleDbCommand cmd = new OleDbCommand(deleteQuery, konekcija))
+                    {
+                        cmd.Parameters.Add("@idPosete", OleDbType.Integer).Value = Convert.ToInt32(idPosete);
+
+                        int redovaObrisano = cmd.ExecuteNonQuery();
+                        if (redovaObrisano > 0)
+                        {
+                            MessageBox.Show("Poseta je uspešno obrisana.", "Obrisano", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            roditeljskaForma?.UcitajDetaljeIzOsobe(idOsobe);
+                            this.Close();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Nije bilo moguće obrisati posetu (poseta nije pronađena?).", "Neuspešno", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Greška pri brisanju posete: " + ex.Message, "Greška Baze", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Debug.WriteLine($"Error deleting visit {idPosete}: {ex}");
+                }
+            }
+        }
+
         private void button2_Click(object sender, EventArgs e)
         {
             DateTime selectedDate = SastaviDatumIzComboboxova();
