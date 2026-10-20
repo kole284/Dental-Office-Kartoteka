@@ -4,6 +4,9 @@ on:
   push:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: windows-latest
@@ -16,7 +19,19 @@ jobs:
         run: msbuild StomatoloskaOrdinacijaKartoteka\StomatoloskaOrdinacijaKartoteka.csproj /p:Configuration=Release /p:Platform=AnyCPU /restore:false
 
       # Samo exe, bez DataBase.accdb da se ne pregazi baza kod klijenta
+      - name: Zip exe
+        run: Compress-Archive -Path StomatoloskaOrdinacijaKartoteka\bin\Release\StomatoloskaOrdinacijaKartoteka.exe -DestinationPath StomatoloskaOrdinacijaKartoteka-exe.zip
+
       - uses: actions/upload-artifact@v4
         with:
           name: StomatoloskaOrdinacijaKartoteka-exe
           path: StomatoloskaOrdinacijaKartoteka\bin\Release\StomatoloskaOrdinacijaKartoteka.exe
+
+      # Release se lakše skida sa telefona nego artifact
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: Build ${{ github.run_number }}
+          target_commitish: ${{ github.sha }}
+          prerelease: true
+          files: StomatoloskaOrdinacijaKartoteka-exe.zip
