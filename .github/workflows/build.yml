@@ -25,7 +25,7 @@ jobs:
       - name: Build MSI
         run: |
           dotnet tool install --global wix --version 5.0.2
-          & "$env:USERPROFILE\.dotnet\tools\wix.exe" build Installer\Product.wxs -d BinDir=StomatoloskaOrdinacijaKartoteka\bin\Release -d Build=${{ github.run_number }} -o StomatoloskaOrdinacijaKartoteka.msi
+          & "$env:USERPROFILE\.dotnet\tools\wix.exe" build Installer\Product.wxs -d BinDir="$PWD\StomatoloskaOrdinacijaKartoteka\bin\Release" -d Build=${{ github.run_number }} -o StomatoloskaOrdinacijaKartoteka.msi
 
       - uses: actions/upload-artifact@v4
         with:
