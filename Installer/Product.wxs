@@ -10,8 +10,9 @@
            Version="1.1.$(var.Build)"
            UpgradeCode="5E0B2C7A-3F4D-4C1B-9A8E-2D6F1B7C9E41"
            Scope="perUser"
-           Codepage="1250"
-           SummaryCodepage="1250">
+           Codepage="1250">
+
+    <SummaryInformation Codepage="1250" />
 
     <MajorUpgrade DowngradeErrorMessage="Novija verzija programa je već instalirana." />
     <MediaTemplate EmbedCab="yes" />
