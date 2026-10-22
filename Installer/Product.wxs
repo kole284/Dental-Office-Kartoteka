@@ -1,0 +1,67 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <!--
+    Per-user instalacija u %LocalAppData%\Programs: bez admin prava,
+    i baza je upisiva (nema VirtualStore preusmeravanja kao u Program Files).
+    Novi UpgradeCode namerno, da se ne bi deinstalirala stara (Setup.vdproj)
+    verzija, koja bi pri deinstalaciji obrisala bazu.
+  -->
+  <Package Name="Stomatološka Ordinacija Kartoteka"
+           Manufacturer="Stomatološka Ordinacija Kartoteka"
+           Version="1.1.$(var.Build)"
+           UpgradeCode="5E0B2C7A-3F4D-4C1B-9A8E-2D6F1B7C9E41"
+           Scope="perUser"
+           Codepage="1250">
+
+    <MajorUpgrade DowngradeErrorMessage="Novija verzija programa je već instalirana." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <StandardDirectory Id="LocalAppDataFolder">
+      <Directory Id="ProgramsDir" Name="Programs">
+        <Directory Id="INSTALLFOLDER" Name="StomatoloskaOrdinacijaKartoteka" />
+      </Directory>
+    </StandardDirectory>
+
+    <ComponentGroup Id="AppFiles" Directory="INSTALLFOLDER">
+      <Component Id="MainExe">
+        <File Id="MainExe" Source="$(var.BinDir)\StomatoloskaOrdinacijaKartoteka.exe" KeyPath="yes" />
+        <RemoveFolder Id="RemoveInstallFolder" On="uninstall" />
+        <RemoveFolder Id="RemoveProgramsDir" Directory="ProgramsDir" On="uninstall" />
+      </Component>
+      <Component Id="MainExeConfig">
+        <File Id="MainExeConfig" Source="$(var.BinDir)\StomatoloskaOrdinacijaKartoteka.exe.config" KeyPath="yes" />
+      </Component>
+      <Files Include="$(var.BinDir)\*.dll" />
+
+      <!-- Baza se nikad ne pregazi pri update-u i ne briše pri deinstalaciji -->
+      <Component Id="Database" Permanent="yes" NeverOverwrite="yes">
+        <File Id="Database" Source="$(var.BinDir)\DataBase.accdb" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <StandardDirectory Id="DesktopFolder">
+      <Component Id="DesktopShortcut">
+        <Shortcut Id="DesktopShortcut"
+                  Name="Stomatološka Kartoteka"
+                  Target="[INSTALLFOLDER]StomatoloskaOrdinacijaKartoteka.exe"
+                  WorkingDirectory="INSTALLFOLDER" />
+        <RegistryValue Root="HKCU" Key="Software\StomatoloskaOrdinacijaKartoteka" Name="DesktopShortcut" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Component Id="StartMenuShortcut">
+        <Shortcut Id="StartMenuShortcut"
+                  Name="Stomatološka Kartoteka"
+                  Target="[INSTALLFOLDER]StomatoloskaOrdinacijaKartoteka.exe"
+                  WorkingDirectory="INSTALLFOLDER" />
+        <RegistryValue Root="HKCU" Key="Software\StomatoloskaOrdinacijaKartoteka" Name="StartMenuShortcut" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </StandardDirectory>
+
+    <Feature Id="Main">
+      <ComponentGroupRef Id="AppFiles" />
+      <ComponentRef Id="DesktopShortcut" />
+      <ComponentRef Id="StartMenuShortcut" />
+    </Feature>
+  </Package>
+</Wix>

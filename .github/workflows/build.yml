@@ -22,6 +22,11 @@ jobs:
       - name: Zip exe
         run: Compress-Archive -Path StomatoloskaOrdinacijaKartoteka\bin\Release\StomatoloskaOrdinacijaKartoteka.exe -DestinationPath StomatoloskaOrdinacijaKartoteka-exe.zip
 
+      - name: Build MSI
+        run: |
+          dotnet tool install --global wix --version 5.0.2
+          & "$env:USERPROFILE\.dotnet\tools\wix.exe" build Installer\Product.wxs -d BinDir=StomatoloskaOrdinacijaKartoteka\bin\Release -d Build=${{ github.run_number }} -o StomatoloskaOrdinacijaKartoteka.msi
+
       - uses: actions/upload-artifact@v4
         with:
           name: StomatoloskaOrdinacijaKartoteka-exe
@@ -34,4 +39,6 @@ jobs:
           name: Build ${{ github.run_number }}
           target_commitish: ${{ github.sha }}
           prerelease: true
-          files: StomatoloskaOrdinacijaKartoteka-exe.zip
+          files: |
+            StomatoloskaOrdinacijaKartoteka.msi
+            StomatoloskaOrdinacijaKartoteka-exe.zip
